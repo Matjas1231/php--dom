@@ -1,1 +1,3 @@
-tracking_number;po_number;data_scheduled;customer;trade;nte;store_id;address;street;city;state;postal_code;phone
+tracking_number;po_number;data_scheduled;customer;trade;nte_usd;store_id;street;city;state;postal_code;phone
+22222e2222;11111q1111;"2021-19-07 20:10";"My new Customer
+";HVAC;1000.00;MNC-123;"Main street 123";Chicago;IL;66562;9991112233

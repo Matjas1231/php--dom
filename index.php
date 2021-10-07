@@ -46,6 +46,7 @@ $date = date('Y-d-m H:i', $dateToString);
 
 $arrayParams['data_scheduled'] = $date;
 $arrayParams['customer'] = $doc->getElementById('customer')->textContent;
+
 $arrayParams['trade'] = $doc->getElementById('trade')->textContent;
 
 $nte = $doc->getElementById('nte')->textContent;
@@ -67,38 +68,41 @@ if (!preg_match('/([A-Z]{3})-(\d{3})/', $storeId)) {
 }
 $arrayParams['store_id'] = $storeId;
 
-$address = $doc->getElementById('location_address')->textContent;
 
-$normalized = preg_replace(['(\s+)u', '(^\s|\s$)u'], [' ', ''], $address);
 
-var_dump($normalized);
+$street = $doc->getElementById('location_address')->firstElementChild->firstChild->textContent;
+$normStreet = preg_replace(['(\s+)u', '(^\s|\s$)u'], [' ', ''], $street);
+$arrayParams['street'] = $normStreet;
 
-// if (strpos($address, 'street')) {
-//     $posOfStreet = strpos($address, 'street');
-//     $street = substr($address, $posOfStreet-5, 15);
-//     print_r($street);
 
-// }
+$cityAndState = $doc->getElementById('location_address')->firstElementChild->lastChild->textContent;
+$normCityStateAndPostalCode = preg_replace(['(\s+)u', '(^\s|\s$)u'], [' ', ''], $cityAndState);
+$arrayOfElements = explode(' ', $normCityStateAndPostalCode);
+$city = $arrayOfElements[0];
+$state = $arrayOfElements[1];
+$postalCode = $arrayOfElements[2];
+$arrayParams['city'] = $city;
+$arrayParams['state'] = $state;
+$arrayParams['postal_code'] = $postalCode;
 
-// var_dump($street);
-
-var_dump(strtok($normalized, ' street'));
-$arr = explode(" ", $normalized, 2);
-var_dump($first = $arr[0]);
+$phone = $doc->getElementById('location_phone')->textContent;
+$phone = explode('-', $phone);
+$phone = implode('', $phone);
+$arrayParams['phone'] = $phone;
 
 libxml_use_internal_errors(false);
 
 echo('<br>=======================<br>');
-print_r($arrayParams);
-
-
-
-exit;
+// print_r($arrayParams);
 
 $delimiter = ';';
 $filename = 'export_data.csv';
 $headers = ['tracking_number', 'po_number', 'data_scheduled', 'customer', 'trade', 'nte_usd', 'store_id', 'street', 'city', 'state', 'postal_code', 'phone'];
 $f = fopen($filename, 'w');
-
 fputcsv($f, $headers, $delimiter);
+$csvData = array($arrayParams['tracking_number'], $arrayParams['po_number'], $arrayParams['data_scheduled'], $arrayParams['customer'], $arrayParams['trade'], $arrayParams['nte_usd'], $arrayParams['store_id'], $arrayParams['street'], $arrayParams['city'], $arrayParams['state'], $arrayParams['postal_code'], $arrayParams['phone']);
+var_dump($arrayParams);
+
+
+fputcsv($f, $arrayParams, $delimiter);
 fclose($f);
