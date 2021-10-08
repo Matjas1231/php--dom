@@ -45,7 +45,9 @@ $dateToString = strtotime($dateContate);
 $date = date('Y-d-m H:i', $dateToString);
 
 $arrayParams['data_scheduled'] = $date;
-$arrayParams['customer'] = $doc->getElementById('customer')->textContent;
+
+$customer = $doc->getElementById('customer')->textContent;
+$arrayParams['customer'] = preg_replace(['(\s+)u', '(^\s|\s$)u'], [' ', ''], $customer);
 
 $arrayParams['trade'] = $doc->getElementById('trade')->textContent;
 
